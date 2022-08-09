@@ -38,3 +38,29 @@ fun line(start: Hex, end: Hex): List<Hex> {
     }
     return result
 }
+
+fun ring(center: Hex, radius: Int): List<Hex> {
+    val ring = mutableListOf<Hex>()
+    var hex = center + Hex.LEFT * radius
+
+    Hex.directions.forEach {
+        for (i in 0 until radius) {
+            ring.add(hex)
+            hex = hex.neighbors[it]!!
+        }
+    }
+
+    return ring
+}
+
+fun circle(center: Hex, radius: Int): List<Hex> {
+    val circle = mutableListOf<Hex>()
+
+    for (i in -radius..radius) {
+        for (j in max(-radius, -i - radius)..min(radius, -i + radius)) {
+            circle.add(center + Hex.invoke(i, j))
+        }
+    }
+
+    return circle
+}
