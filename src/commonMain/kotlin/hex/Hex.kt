@@ -1,17 +1,24 @@
 package hex
 
+import com.offlinebrain.ecs.Component
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import memoize.memoize
 import kotlin.math.abs
 
+interface HasHex {
+    val hex: Hex
+}
+
 @Serializable
+@SerialName("Hex")
 class Hex private constructor(
     val q: Int,
     val r: Int,
     @Transient
     val s: Int = -q - r
-) {
+) : Component {
     init {
         assert(q + r + s == 0)
     }
