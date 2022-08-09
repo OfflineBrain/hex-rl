@@ -22,6 +22,7 @@ value class MoveCost(val value: Double) : Component, Comparable<MoveCost> {
     operator fun div(other: MoveCost): MoveCost = MoveCost(value / other.value)
     operator fun div(other: Int): MoveCost = MoveCost(value / other)
     override operator fun compareTo(other: MoveCost): Int = value.compareTo(other.value)
+    operator fun compareTo(other: Double): Int = value.compareTo(other)
 }
 
 
