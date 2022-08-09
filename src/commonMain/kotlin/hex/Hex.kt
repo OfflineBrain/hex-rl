@@ -16,11 +16,11 @@ class Hex private constructor(
         assert(q + r + s == 0)
     }
 
-    val x = q + (r / 2)
-    val y = r
+    val x = q + (r / 2.0)
+    val y = r.toDouble()
 
     val length = (abs(q) + abs(r) + abs(s)) / 2
-
+    val neighbors = directions.associateWith { it + this }
 
     operator fun times(times: Int): Hex {
         return Hex(q * times, r * times)
