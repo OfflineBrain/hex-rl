@@ -8,5 +8,6 @@ data class GenerationConfig(
     val size: RoomSize,
     val generations: Int,
     val initialStates: Map<CellType, Double>,
-    val rules: List<Rule>
+    val rules: List<Rule>,
+    val goal: GoalRule
 )

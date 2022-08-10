@@ -1,6 +1,5 @@
 package game.map.generation.rule
 
-import algo.getByProbability
 import game.map.generation.CellType
 import game.map.generation.rule.MatchCondition.ALL
 import game.map.generation.rule.MatchCondition.ANY
@@ -12,16 +11,32 @@ import kotlinx.serialization.Serializable
 data class Rule(
     val states: Set<CellType>,
     val transformations: Set<TransformRule>
+)
+
+@Serializable
+data class GoalRule(
+    private val match: MatchCondition,
+    private val constraints: Set<Constraint>,
+    private val min: Int = 1,
+    private val max: Int = constraints.size,
 ) {
-    operator fun invoke(cell: CellType, neighbors: List<CellType>): CellType? {
-        return if (cell in states) {
-            val transformed = transformations.associate { it(cell, neighbors) }.filterValues { it != 0.0 }
-            if (transformed.isEmpty()) {
-                return cell
-            }
-            getByProbability(transformed)
-        } else {
-            null
+    init {
+        require(min >= 0) { "min must be >= 0" }
+        require(max >= 0) { "max must be >= 0" }
+        require(min <= max) { "min must be <= max" }
+    }
+
+    operator fun invoke(cells: List<CellType>): Boolean {
+        val matches = constraints.count { constraint ->
+            val compliant = cells.count { it == constraint.cell }
+            constraint.condition(compliant, constraint.value)
+        }
+
+        return when (match) {
+            ALL -> matches == constraints.size
+            ANY -> matches > 0
+            NONE -> matches == 0
+            COUNT -> matches in min..max
         }
     }
 }
