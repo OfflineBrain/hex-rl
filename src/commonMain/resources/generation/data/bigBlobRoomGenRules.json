@@ -70,11 +70,12 @@
               "cell": "FLOOR",
               "value": 6,
               "condition": {
-                "#operator": "<"
+                "#operator": "<="
               }
             }
           ],
-          "result": "FLOOR"
+          "result": "FLOOR",
+          "probability": 0.5
         },
         {
           "match": "ALL",
@@ -87,7 +88,8 @@
               }
             }
           ],
-          "result": "LIGHT_CRYSTAL"
+          "result": "LIGHT_CRYSTAL",
+          "probability": 0.5
         }
       ]
     }

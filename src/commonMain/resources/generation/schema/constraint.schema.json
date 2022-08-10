@@ -16,19 +16,6 @@
     "condition": {
       "$ref": "predicate.schema.json",
       "description": "The condition to constrain the cell to."
-    },
-    "probability": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 1
-    },
-    "min": {
-      "type": "integer",
-      "minimum": 1
-    },
-    "max": {
-      "type": "integer",
-      "minimum": 1
     }
   },
   "required": [

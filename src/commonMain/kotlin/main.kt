@@ -1,13 +1,19 @@
-import com.soywiz.korge.*
-import com.soywiz.korge.scene.*
-import com.soywiz.korge.view.*
-import com.soywiz.korim.color.*
-import com.soywiz.korio.file.std.*
-import game.map.generation.*
-import game.map.generation.rule.*
-import game.view.*
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
+import com.soywiz.korge.Korge
+import com.soywiz.korge.scene.Scene
+import com.soywiz.korge.scene.sceneContainer
+import com.soywiz.korge.view.SContainer
+import com.soywiz.korge.view.image
+import com.soywiz.korim.color.Colors
+import com.soywiz.korim.color.RGBA
+import com.soywiz.korio.file.std.resourcesVfs
+import game.map.generation.CellType
+import game.map.generation.JoiningRoom
+import game.map.generation.RectRoomGenerator
+import game.map.generation.rule.GenerationConfig
+import game.map.generation.toOrigin
+import game.view.Minimap
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 
 suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"]) {
     val sceneContainer = sceneContainer()
@@ -32,7 +38,13 @@ class MyScene : Scene() {
             }
         }
 
-        val minimap = Minimap(rectRoomGenerator.generate(), colorMapping)
+
+        var level = JoiningRoom(rectRoomGenerator.generate())
+        for (i in 0..30) {
+            level = level.join(JoiningRoom(rectRoomGenerator.generate()))
+        }
+
+        val minimap = Minimap(level.room.toOrigin(), colorMapping)
 
         addChild(image(minimap.minimapBitmap))
     }
