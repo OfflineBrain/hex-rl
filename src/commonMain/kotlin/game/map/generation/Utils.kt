@@ -1,7 +1,6 @@
 package game.map.generation
 
-import hex.Hex
-import hex.neighbors
+import hex.*
 
 fun Map<Hex, CellType>.biggestBlob(blobTypes: Set<CellType> = setOf(CellType.FLOOR)): Map<Hex, CellType> {
     fun fill(blobs: Map<Hex, Any>): Set<Hex> {
@@ -34,4 +33,27 @@ fun Map<Hex, CellType>.biggestBlob(blobTypes: Set<CellType> = setOf(CellType.FLO
 
     return blob.map { blobs.neighbors(it).keys }.flatten().distinct()
         .associateWith { blobs[it]!! }
+}
+
+fun Map<Hex, CellType>.addBorder(borderType: CellType = CellType.WALL): Map<Hex, CellType> {
+    val minWidth = keys.minBy { it.x.toInt() }.x.toInt() - 1
+    val maxWidth = keys.maxBy { it.x.toInt() }.x.toInt() + 1
+    val minHeight = keys.minBy { it.y }.y.toInt() - 1
+    val maxHeight = keys.maxBy { it.y }.y.toInt() + 1
+
+    val shift = Hex.ofXY(minWidth, minHeight)
+
+    return buildRectHexGrid(maxWidth - minWidth + 1, maxHeight - minHeight + 1) { _, _ -> borderType }
+        .mapKeys { (hex, _) -> hex + shift }.toMutableMap()
+        .also { it.putAll(this) }
+        .filter { (hex, _) -> neighbors(hex).count { (_, cell) -> cell != borderType } > 0 }
+}
+
+fun Map<Hex, CellType>.toOrigin(): Map<Hex, CellType> {
+    val x = keys.minBy { it.x.toInt() }.x.toInt()
+    val y = keys.minBy { it.y }.y.toInt()
+
+    val shift = Hex.ofXY(x, y)
+
+    return mapKeys { (hex, _) -> hex - shift }
 }
