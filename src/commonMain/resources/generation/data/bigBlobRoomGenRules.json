@@ -91,5 +91,17 @@
         }
       ]
     }
-  ]
+  ],
+  "goal": {
+    "match": "ALL",
+    "constraints": [
+      {
+        "cell": "FLOOR",
+        "value": 10,
+        "condition": {
+          "#operator": ">="
+        }
+      }
+    ]
+  }
 }

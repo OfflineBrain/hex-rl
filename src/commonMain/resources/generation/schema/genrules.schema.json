@@ -25,6 +25,7 @@
           "maximum": 1
         }
       },
+      "additionalProperties": false,
       "minProperties": 1
     },
     "rules": {
@@ -46,15 +47,38 @@
             },
             "minItems": 1
           }
-        }
+        },
+        "additionalProperties": false
       },
       "minItems": 1
+    },
+    "goal": {
+      "type": "object",
+      "properties": {
+        "match": {
+          "$ref": "match.schema.json"
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "$ref": "constraint.schema.json"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "constraints",
+        "match"
+      ],
+      "additionalProperties": false
     }
   },
+  "additionalProperties": false,
   "required": [
     "generations",
     "initialStates",
     "rules",
-    "size"
+    "size",
+    "goal"
   ]
 }

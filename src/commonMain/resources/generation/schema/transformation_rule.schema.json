@@ -4,13 +4,7 @@
   "type": "object",
   "properties": {
     "match": {
-      "type": "string",
-      "enum": [
-        "ALL",
-        "ANY",
-        "NONE",
-        "COUNT"
-      ]
+      "$ref": "match.schema.json"
     },
     "constraints": {
       "type": "array",
@@ -34,5 +28,6 @@
     "match",
     "constraints",
     "result"
-  ]
+  ],
+  "additionalProperties": false
 }

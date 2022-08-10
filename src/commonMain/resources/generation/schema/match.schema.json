@@ -1,0 +1,11 @@
+{
+  "$id": "https://com.offlinebrain/schema/hexrl/cell.schema.json",
+  "title": "Match",
+  "type": "string",
+  "enum": [
+    "ALL",
+    "ANY",
+    "NONE",
+    "COUNT"
+  ]
+}

@@ -34,5 +34,6 @@
     "maxWidth",
     "minHeight",
     "maxHeight"
-  ]
+  ],
+  "additionalProperties": false
 }
