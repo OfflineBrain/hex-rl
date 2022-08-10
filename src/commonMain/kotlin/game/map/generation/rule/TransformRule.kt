@@ -57,11 +57,11 @@ data class TransformRule(
         require(min <= max) { "min must be <= max" }
     }
 
-    operator fun invoke(cell: CellType, neighbors: List<CellType>): Pair<CellType, Double> {
+    operator fun invoke(cell: CellType, neighbors: List<CellType>): Pair<CellType, Double>? {
         val matches = constraints.count { constraint ->
             val cells = neighbors.count { it == constraint.cell }
             constraint.condition(cells, constraint.value)
-        } + subRules.count { it(cell, neighbors).first == result }
+        } + subRules.count { it(cell, neighbors)?.first == result }
 
         val comply = when (match) {
             ALL -> matches == constraints.size + subRules.size
@@ -70,11 +70,10 @@ data class TransformRule(
             COUNT -> matches in min..max
         }
 
-        return if (comply) {
-            result to probability
-        } else {
-            cell to 0.0
+        if (comply) {
+             return result to probability
         }
+        return null
     }
 }
 

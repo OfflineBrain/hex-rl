@@ -1,6 +1,8 @@
 package game.map.generation
 
-import hex.*
+import hex.Hex
+import hex.buildRectHexGrid
+import hex.neighbors
 
 fun Map<Hex, CellType>.biggestBlob(blobTypes: Set<CellType> = setOf(CellType.FLOOR)): Map<Hex, CellType> {
     fun fill(blobs: Map<Hex, Any>): Set<Hex> {
@@ -31,8 +33,8 @@ fun Map<Hex, CellType>.biggestBlob(blobTypes: Set<CellType> = setOf(CellType.FLO
     val blobs = this.filter { it.value in blobTypes }
     val blob = fill(blobs)
 
-    return blob.map { blobs.neighbors(it).keys }.flatten().distinct()
-        .associateWith { blobs[it]!! }
+    return blob.map { this.neighbors(it).keys }.flatten().distinct()
+        .associateWith { this[it]!! }
 }
 
 fun Map<Hex, CellType>.addBorder(borderType: CellType = CellType.WALL): Map<Hex, CellType> {

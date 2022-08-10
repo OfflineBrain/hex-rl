@@ -41,7 +41,8 @@ class RectRoomGenerator(private val config: GenerationConfig) : RoomGenerator {
                 val state = grid[hex]!!
                 val neighbors = grid.neighbors(hex).values.toList()
                 val transformations = transformers[state] ?: emptyList()
-                val resultStates = transformations.associate { it(state, neighbors) }.ifEmpty { mapOf(state to 1.0) }
+                val resultStates =
+                    transformations.mapNotNull { it(state, neighbors) }.toMap().ifEmpty { mapOf(state to 1.0) }
                 val nextState = getByProbability(resultStates)
                 grid[hex] = nextState
             }
