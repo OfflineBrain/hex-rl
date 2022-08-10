@@ -6,16 +6,19 @@ import hex.Hex
 import hex.buildRectHexGrid
 import hex.neighbors
 
-class RectRoomGenerator(private val config: GenerationConfig) {
+class RectRoomGenerator(private val config: GenerationConfig) : RoomGenerator {
     private val transformers = config.rules.map { rule ->
         rule.states.map { it to rule.transformations }
     }.flatten().toMap()
 
-    fun generate() {
+    override fun generate(): Map<Hex, CellType> {
         val width = (config.size.minWidth..config.size.maxWidth).random()
         val height = (config.size.minHeight..config.size.maxHeight).random()
 
-        val room = generateRoomWithRetries(width, height)
+        return generateRoomWithRetries(width, height)
+            .biggestBlob()
+            .addBorder()
+            .toOrigin()
     }
 
     private fun generateRoomWithRetries(width: Int, height: Int): MutableMap<Hex, CellType> {

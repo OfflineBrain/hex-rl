@@ -1,5 +1,7 @@
 package game.map.generation
 
+import hex.*
+
 interface RoomGenerator {
-    fun generate()
+    fun generate(): Map<Hex, CellType>
 }
