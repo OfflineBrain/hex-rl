@@ -1,0 +1,91 @@
+{
+  "size": {
+    "minWidth": 5,
+    "minHeight": 5,
+    "maxWidth": 100,
+    "maxHeight": 100
+  },
+  "generations": 5,
+  "rules": [
+    {
+      "states": [
+        "FLOOR"
+      ],
+      "transformations": [
+        {
+          "match": "ALL",
+          "constraints": [
+            {
+              "cell": "WALL",
+              "value": 3,
+              "condition": {
+                "#operator": ">="
+              }
+            },
+            {
+              "cell": "WALL",
+              "value": 5,
+              "condition": {
+                "#operator": "!="
+              }
+            }
+          ],
+          "result": "WALL"
+        },
+        {
+          "match": "ALL",
+          "constraints": [
+            {
+              "cell": "WALL",
+              "value": 5,
+              "condition": {
+                "#operator": "=="
+              }
+            }
+          ],
+          "result": "LIGHT_CRYSTAL"
+        }
+      ]
+    },
+    {
+      "states": [
+        "WALL"
+      ],
+      "transformations": [
+        {
+          "match": "ALL",
+          "constraints": [
+            {
+              "cell": "FLOOR",
+              "value": 3,
+              "condition": {
+                "#operator": ">="
+              }
+            },
+            {
+              "cell": "FLOOR",
+              "value": 6,
+              "condition": {
+                "#operator": "<"
+              }
+            }
+          ],
+          "result": "FLOOR"
+        },
+        {
+          "match": "ALL",
+          "constraints": [
+            {
+              "cell": "FLOOR",
+              "value": 6,
+              "condition": {
+                "#operator": "=="
+              }
+            }
+          ],
+          "result": "LIGHT_CRYSTAL"
+        }
+      ]
+    }
+  ]
+}

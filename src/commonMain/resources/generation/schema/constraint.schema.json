@@ -1,0 +1,40 @@
+{
+  "$id": "https://com.offlinebrain/schema/hexrl/constraint.schema.json",
+  "title": "Constraint",
+  "description": "A constraint on a transformation.",
+  "type": "object",
+  "properties": {
+    "cell": {
+      "$ref": "cell.schema.json",
+      "description": "The cell to constrain."
+    },
+    "value": {
+      "type": "integer",
+      "description": "The value to constrain the cell to.",
+      "minimum": 0,
+      "maximum": 6
+    },
+    "condition": {
+      "$ref": "predicate.schema.json",
+      "description": "The condition to constrain the cell to."
+    },
+    "probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "min": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "max": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "cell",
+    "value",
+    "condition"
+  ]
+}

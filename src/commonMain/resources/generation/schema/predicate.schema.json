@@ -1,0 +1,23 @@
+{
+  "$id": "https://com.offlinebrain/schema/hexrl/cell.schema.json",
+  "title": "Predicate",
+  "type": "object",
+  "description": "The condition to constrain the cell to.",
+  "properties": {
+    "#operator": {
+      "type": "string",
+      "description": "The operator to use to constrain the cell.",
+      "enum": [
+        "==",
+        "!=",
+        ">",
+        "<",
+        ">=",
+        "<="
+      ]
+    }
+  },
+  "required": [
+    "#operator"
+  ]
+}

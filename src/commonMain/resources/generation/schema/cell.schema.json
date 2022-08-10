@@ -1,0 +1,12 @@
+{
+  "$id": "https://com.offlinebrain/schema/hexrl/cell.schema.json",
+  "title": "Constraint",
+  "description": "A constraint on a transformation.",
+  "type": "string",
+  "enum": [
+    "VOID",
+    "FLOOR",
+    "WALL",
+    "LIGHT_CRYSTAL"
+  ]
+}

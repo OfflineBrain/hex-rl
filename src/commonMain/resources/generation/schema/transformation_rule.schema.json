@@ -1,0 +1,38 @@
+{
+  "$id": "https://com.offlinebrain/schema/hexrl/transformation_rule.schema.json",
+  "title": "Transformation rule",
+  "type": "object",
+  "properties": {
+    "match": {
+      "type": "string",
+      "enum": [
+        "ALL",
+        "ANY",
+        "NONE",
+        "COUNT"
+      ]
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "$ref": "constraint.schema.json"
+      },
+      "minItems": 1
+    },
+    "result": {
+      "$ref": "cell.schema.json"
+    },
+    "subRules": {
+      "type": "array",
+      "items": {
+        "$ref": "transformation_rule.schema.json"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "match",
+    "constraints",
+    "result"
+  ]
+}

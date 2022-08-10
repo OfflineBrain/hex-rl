@@ -1,0 +1,38 @@
+{
+  "$id": "https://com.offlinebrain/schema/hexrl/room_size.schema.json",
+  "title": "Room Size",
+  "description": "This schema defines the size of a room for generation",
+  "type": "object",
+  "properties": {
+    "minWidth": {
+      "type": "number",
+      "title": "Minimum Width",
+      "description": "The minimum width of the room",
+      "minimum": 1
+    },
+    "maxWidth": {
+      "type": "number",
+      "title": "Maximum Width",
+      "description": "The maximum width of the room",
+      "minimum": 1
+    },
+    "minHeight": {
+      "type": "number",
+      "title": "Minimum Height",
+      "description": "The minimum height of the room",
+      "minimum": 1
+    },
+    "maxHeight": {
+      "type": "number",
+      "title": "Maximum Height",
+      "description": "The maximum height of the room",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "minWidth",
+    "maxWidth",
+    "minHeight",
+    "maxHeight"
+  ]
+}
