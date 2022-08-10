@@ -9,9 +9,3 @@ data class GenerationConfig(
     val generations: Int,
     val rules: List<Rule>
 )
-
-@Serializable
-data class Rule(
-    val states: Set<CellType>,
-    val transformations: Set<TransformRule>
-)

@@ -1,11 +1,30 @@
 package game.map.generation.rule
 
+import algo.getByProbability
 import game.map.generation.CellType
 import game.map.generation.rule.MatchCondition.ALL
 import game.map.generation.rule.MatchCondition.ANY
 import game.map.generation.rule.MatchCondition.COUNT
 import game.map.generation.rule.MatchCondition.NONE
 import kotlinx.serialization.Serializable
+
+@Serializable
+data class Rule(
+    val states: Set<CellType>,
+    val transformations: Set<TransformRule>
+) {
+    operator fun invoke(cell: CellType, neighbors: List<CellType>): CellType? {
+        return if (cell in states) {
+            val transformed = transformations.associate { it(cell, neighbors) }.filterValues { it != 0.0 }
+            if (transformed.isEmpty()) {
+                return cell
+            }
+            getByProbability(transformed)
+        } else {
+            null
+        }
+    }
+}
 
 @Serializable
 data class TransformRule(
@@ -23,11 +42,11 @@ data class TransformRule(
         require(min <= max) { "min must be <= max" }
     }
 
-    operator fun invoke(cell: CellType, neighbors: List<CellType>): CellType {
+    operator fun invoke(cell: CellType, neighbors: List<CellType>): Pair<CellType, Double> {
         val matches = constraints.count { constraint ->
             val cells = neighbors.count { it == constraint.cell }
             constraint.condition(cells, constraint.value)
-        } + subRules.count { it(cell, neighbors) == result }
+        } + subRules.count { it(cell, neighbors).first == result }
 
         val comply = when (match) {
             ALL -> matches == constraints.size + subRules.size
@@ -37,9 +56,9 @@ data class TransformRule(
         }
 
         return if (comply) {
-            result
+            result to probability
         } else {
-            cell
+            cell to 0.0
         }
     }
 }
