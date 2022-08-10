@@ -43,7 +43,7 @@ fun Map<Hex, CellType>.addBorder(borderType: CellType = CellType.WALL): Map<Hex,
 
     val shift = Hex.ofXY(minWidth, minHeight)
 
-    return buildRectHexGrid(maxWidth - minWidth + 1, maxHeight - minHeight + 1) { _, _ -> borderType }
+    return buildRectHexGrid(maxWidth - minWidth + 2, maxHeight - minHeight + 1) { _, _ -> borderType }
         .mapKeys { (hex, _) -> hex + shift }.toMutableMap()
         .also { it.putAll(this) }
         .filter { (hex, _) -> neighbors(hex).count { (_, cell) -> cell != borderType } > 0 }

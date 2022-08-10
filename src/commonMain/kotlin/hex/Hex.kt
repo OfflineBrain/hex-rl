@@ -1,11 +1,9 @@
 package hex
 
-import com.offlinebrain.ecs.Component
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-import memoize.memoize
-import kotlin.math.abs
+import com.offlinebrain.ecs.*
+import kotlinx.serialization.*
+import memoize.*
+import kotlin.math.*
 
 interface HasHex {
     val hex: Hex
@@ -20,14 +18,14 @@ class Hex private constructor(
     val s: Int = -q - r
 ) : Component {
     init {
-        assert(q + r + s == 0)
+        require(q + r + s == 0)
     }
 
     val x = q + (r / 2.0)
     val y = r.toDouble()
 
     val length = (abs(q) + abs(r) + abs(s)) / 2
-    val neighbors = directions.associateWith { it + this }
+    val neighbors by lazy { directions.associateWith { it + this } }
 
     operator fun times(times: Int): Hex {
         return Hex(q * times, r * times)
