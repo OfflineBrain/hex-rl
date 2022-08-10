@@ -13,6 +13,20 @@
       "type": "integer",
       "minimum": 1
     },
+    "initialStates": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "cell.schema.json"
+      },
+      "patternProperties": {
+        "": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "minProperties": 1
+    },
     "rules": {
       "type": "array",
       "items": {
@@ -39,6 +53,7 @@
   },
   "required": [
     "generations",
+    "initialStates",
     "rules",
     "size"
   ]

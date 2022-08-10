@@ -6,6 +6,10 @@
     "maxHeight": 100
   },
   "generations": 5,
+  "initialStates": {
+    "FLOOR": 0.5,
+    "WALL": 0.5
+  },
   "rules": [
     {
       "states": [
