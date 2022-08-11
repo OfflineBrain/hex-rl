@@ -13,6 +13,27 @@
   "rules": [
     {
       "states": [
+        "LIGHT_CRYSTAL"
+      ],
+      "transformations": [
+        {
+          "match": "ALL",
+          "result": "FLOOR",
+          "probability": 1,
+          "constraints": [
+            {
+              "value": 1,
+              "cell": "LIGHT_CRYSTAL",
+              "condition": {
+                "#operator": ">="
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "states": [
         "FLOOR"
       ],
       "transformations": [
@@ -61,7 +82,7 @@
           "constraints": [
             {
               "cell": "FLOOR",
-              "value": 3,
+              "value": 4,
               "condition": {
                 "#operator": ">="
               }
@@ -70,26 +91,26 @@
               "cell": "FLOOR",
               "value": 6,
               "condition": {
-                "#operator": "<="
+                "#operator": "<"
               }
             }
           ],
           "result": "FLOOR",
-          "probability": 0.5
+          "probability": 1
         },
         {
           "match": "ALL",
           "constraints": [
             {
               "cell": "FLOOR",
-              "value": 6,
+              "value": 5,
               "condition": {
-                "#operator": "=="
+                "#operator": ">="
               }
             }
           ],
           "result": "LIGHT_CRYSTAL",
-          "probability": 0.5
+          "probability": 1
         }
       ]
     }

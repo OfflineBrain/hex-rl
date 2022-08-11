@@ -48,7 +48,11 @@
             "minItems": 1
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "required": [
+          "states",
+          "transformations"
+        ]
       },
       "minItems": 1
     },

@@ -1,21 +1,27 @@
 package game.map.generation
 
-import algo.*
-import hex.*
+import algo.getByProbability
+import hex.Hex
 
 class JoiningRoom(
     val room: Map<Hex, CellType>,
-    private val borders: MutableMap<Int, List<Hex>> = mutableMapOf()
+    private val borders: MutableMap<Int, List<List<Hex>>> = mutableMapOf()
 ) {
 
     init {
-        if (borders.isEmpty()) {
-            borders[-1] = room.keys.minBy { it.q }.let { border -> room.keys.filter { hex -> hex.q == border.q } }
-            borders[1] = room.keys.maxBy { it.q }.let { border -> room.keys.filter { hex -> hex.q == border.q } }
-            borders[-2] = room.keys.minBy { it.r }.let { border -> room.keys.filter { hex -> hex.r == border.r } }
-            borders[2] = room.keys.maxBy { it.r }.let { border -> room.keys.filter { hex -> hex.r == border.r } }
-            borders[-3] = room.keys.minBy { it.s }.let { border -> room.keys.filter { hex -> hex.s == border.s } }
-            borders[3] = room.keys.maxBy { it.s }.let { border -> room.keys.filter { hex -> hex.s == border.s } }
+        if (borders.isEmpty() && room.isNotEmpty()) {
+            borders[-1] =
+                listOf(room.keys.minBy { it.q }.let { border -> room.keys.filter { hex -> hex.q == border.q } })
+            borders[1] =
+                listOf(room.keys.maxBy { it.q }.let { border -> room.keys.filter { hex -> hex.q == border.q } })
+            borders[-2] =
+                listOf(room.keys.minBy { it.r }.let { border -> room.keys.filter { hex -> hex.r == border.r } })
+            borders[2] =
+                listOf(room.keys.maxBy { it.r }.let { border -> room.keys.filter { hex -> hex.r == border.r } })
+            borders[-3] =
+                listOf(room.keys.minBy { it.s }.let { border -> room.keys.filter { hex -> hex.s == border.s } })
+            borders[3] =
+                listOf(room.keys.maxBy { it.s }.let { border -> room.keys.filter { hex -> hex.s == border.s } })
         }
     }
 
@@ -32,46 +38,63 @@ class JoiningRoom(
             CellType.LIGHT_CRYSTAL to 0.2,
         )
     ): JoiningRoom {
-        val borderIndex = borders.keys.random()
-        val otherBorderIndex = borderIndex * -1
+        if (other.room.isEmpty()) {
+            return this
+        } else if (room.isEmpty()) {
+            return other
+        }
 
-        val joinHex = borders[borderIndex]!!.random()
-        val otherJoinHex = other.borders[otherBorderIndex]!!.random()
+        for (borderIndex in borders.keys.shuffled()) {
+            val otherBorderIndex = borderIndex * -1
 
-        val diff = joinHex - otherJoinHex
-        val shiftedOtherRoom = other.room.mapKeys { it.key + diff }
+            val joinBorder = borders[borderIndex]!!.random()
+            val joinHex = joinBorder.random()
+            val otherJoinBorder = other.borders[otherBorderIndex]!!.random()
+            val otherJoinHex = otherJoinBorder.random()
 
-        val intersection = room.keys.intersect(shiftedOtherRoom.keys)
-        val merge = intersection.associateWith {
-            val roomType = room[it]!!
-            val otherRoomType = shiftedOtherRoom[it]!!
+            val diff = joinHex - otherJoinHex
+            val shiftedOtherRoom = other.room.mapKeys { it.key + diff }
 
-            if (roomType == otherRoomType) {
-                roomType
-            } else {
-                getByProbability(
-                    mapOf(
-                        roomType to (allowedToMerge[roomType] ?: 0.0),
-                        otherRoomType to (allowedToMerge[otherRoomType] ?: 0.0)
-                    )
-                )
+            val intersection = room.keys.intersect(shiftedOtherRoom.keys)
+            if (intersection.any { it !in joinBorder }) {
+                continue
             }
-        }
 
-        val merged = mutableMapOf<Hex, CellType>().apply {
-            putAll(room)
-            putAll(shiftedOtherRoom)
-            putAll(merge)
-            put(joinHex, getByProbability(joins))
-        }
+            val merge = intersection.associateWith {
+                val roomType = room[it]!!
+                val otherRoomType = shiftedOtherRoom[it]!!
 
-        val newBorders = mutableMapOf<Int, List<Hex>>()
-        borders.keys.filter { it != borderIndex && it != otherBorderIndex }.forEach {
-            newBorders[it] = borders[it]!! + other.borders[it]!!.map { it + diff }
-        }
-        newBorders[borderIndex] = other.borders[borderIndex]!!.map { it + diff }
-        newBorders[otherBorderIndex] = borders[otherBorderIndex]!!
+                if (roomType == otherRoomType) {
+                    roomType
+                } else {
+                    getByProbability(
+                        mapOf(
+                            roomType to (allowedToMerge[roomType] ?: 0.0),
+                            otherRoomType to (allowedToMerge[otherRoomType] ?: 0.0)
+                        )
+                    )
+                }
+            }
 
-        return JoiningRoom(merged, newBorders)
+            val merged = mutableMapOf<Hex, CellType>().apply {
+                putAll(room)
+                putAll(shiftedOtherRoom)
+                putAll(merge)
+                put(joinHex, getByProbability(joins))
+            }
+
+            val newBorders = mutableMapOf<Int, List<List<Hex>>>()
+            borders.keys.filter { it != borderIndex && it != otherBorderIndex }.forEach {
+                newBorders[it] = borders[it]!! + other.borders[it]!!.map { border -> border.map { hex -> hex + diff } }
+            }
+            newBorders[borderIndex] = other.borders[borderIndex]!!.map { border -> border.map { hex -> hex + diff } } +
+                (borders[borderIndex]!!.filterNot { it.contains(joinHex) })
+            newBorders[otherBorderIndex] = borders[otherBorderIndex]!! +
+                (other.borders[otherBorderIndex]!!.map { border -> border.map { hex -> hex + diff } }
+                    .filterNot { it.contains(otherJoinHex) })
+
+            return JoiningRoom(merged, newBorders)
+        }
+        return this
     }
 }

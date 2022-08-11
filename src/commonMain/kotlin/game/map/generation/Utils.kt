@@ -1,10 +1,10 @@
 package game.map.generation
 
-import hex.Hex
-import hex.buildRectHexGrid
-import hex.neighbors
+import hex.*
 
 fun Map<Hex, CellType>.biggestBlob(blobTypes: Set<CellType> = setOf(CellType.FLOOR)): Map<Hex, CellType> {
+    if(isEmpty()) return this
+
     fun fill(blobs: Map<Hex, Any>): Set<Hex> {
         val rewritableBlobs = blobs.toMutableMap()
         val results = mutableListOf<Set<Hex>>()
@@ -26,7 +26,11 @@ fun Map<Hex, CellType>.biggestBlob(blobTypes: Set<CellType> = setOf(CellType.FLO
             results.add(blob)
         }
 
-        return results.maxBy { it.size }
+        return if (results.isNotEmpty()) {
+            results.maxBy { it.size }
+        } else {
+            setOf()
+        }
     }
 
 
@@ -38,6 +42,8 @@ fun Map<Hex, CellType>.biggestBlob(blobTypes: Set<CellType> = setOf(CellType.FLO
 }
 
 fun Map<Hex, CellType>.addBorder(borderType: CellType = CellType.WALL): Map<Hex, CellType> {
+    if(isEmpty()) return this
+
     val minWidth = keys.minBy { it.x.toInt() }.x.toInt() - 1
     val maxWidth = keys.maxBy { it.x.toInt() }.x.toInt() + 1
     val minHeight = keys.minBy { it.y }.y.toInt() - 1
@@ -52,6 +58,8 @@ fun Map<Hex, CellType>.addBorder(borderType: CellType = CellType.WALL): Map<Hex,
 }
 
 fun Map<Hex, CellType>.toOrigin(): Map<Hex, CellType> {
+    if(isEmpty()) return this
+
     val x = keys.minBy { it.x.toInt() }.x.toInt()
     val y = keys.minBy { it.y }.y.toInt()
 
