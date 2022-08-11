@@ -1,22 +1,14 @@
-import com.soywiz.korge.Korge
-import com.soywiz.korge.scene.Scene
-import com.soywiz.korge.scene.sceneContainer
-import com.soywiz.korge.view.SContainer
-import com.soywiz.korge.view.image
-import com.soywiz.korge.view.scale
-import com.soywiz.korim.color.Colors
-import com.soywiz.korim.color.RGBA
-import com.soywiz.korio.file.std.resourcesVfs
-import game.map.generation.CellType
-import game.map.generation.JoiningRoom
-import game.map.generation.RectRoomGenerator
-import game.map.generation.addBorder
-import game.map.generation.rule.GenerationConfig
-import game.map.generation.toOrigin
-import game.view.Minimap
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
-import kotlin.math.max
+import com.soywiz.korge.*
+import com.soywiz.korge.scene.*
+import com.soywiz.korge.view.*
+import com.soywiz.korim.color.*
+import com.soywiz.korio.file.std.*
+import game.map.generation.*
+import game.map.generation.rule.*
+import game.view.*
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
+import kotlin.math.*
 
 suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"]) {
     val sceneContainer = sceneContainer()
@@ -26,10 +18,15 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
 
 class MyScene : Scene() {
     override suspend fun SContainer.sceneMain() {
-        val generationConfigJson = resourcesVfs["generation/data/bigBlobRoomGenRules.json"].readString()
+        val generationConfigJson = resourcesVfs["generation/data/bigRoomsConfig.json"].readString()
         val generationConfig = Json.decodeFromString<GenerationConfig>(serializer(), generationConfigJson)
 
         val rectRoomGenerator = RectRoomGenerator(generationConfig)
+
+        val postConfigJson = resourcesVfs["generation/data/levelPostProcessRules.json"].readString()
+        val postConfig = Json.decodeFromString<PostProcessConfig>(serializer(), postConfigJson)
+
+        val postProcessor = PostProcessor(postConfig)
 
         val colorMapping: (CellType) -> RGBA = {
             when (it) {
@@ -52,7 +49,7 @@ class MyScene : Scene() {
             )
         }
 
-        val room = level.room.addBorder().toOrigin()
+        val room = postProcessor.process(level.room.addBorder().toOrigin())
         val minimap = Minimap(room, colorMapping)
 
         val view = image(minimap.minimapBitmap)

@@ -7,7 +7,7 @@ data class RoomSize(
     val minWidth: Int,
     val minHeight: Int,
     val maxWidth: Int,
-    val maxHeight: Int
+    val maxHeight: Int,
 ) {
     init {
         require(minWidth > 0) { "minimum width must be positive" }

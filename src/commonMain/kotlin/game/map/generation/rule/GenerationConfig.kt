@@ -9,5 +9,5 @@ data class GenerationConfig(
     val generations: Int,
     val initialStates: Map<CellType, Double>,
     val rules: List<Rule>,
-    val goal: GoalRule
+    val goal: GoalRule,
 )

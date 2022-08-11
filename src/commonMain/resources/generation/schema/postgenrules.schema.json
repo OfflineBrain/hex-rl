@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://com.offlinebrain/schema/hexrl/postgenrules.schema.json",
+  "title": "Constraint",
+  "description": "A constraint on a transformation.",
+  "type": "object",
+  "properties": {
+    "generations": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "priority": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "states": {
+            "type": "array",
+            "items": {
+              "$ref": "cell.schema.json"
+            },
+            "minItems": 1
+          },
+          "transformations": {
+            "type": "array",
+            "items": {
+              "$ref": "transformation_rule.schema.json"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "states",
+          "transformations",
+          "priority"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "generations",
+    "rules"
+  ]
+}

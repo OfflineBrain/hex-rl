@@ -2,14 +2,15 @@ package game.map.generation
 
 import algo.getByProbability
 import game.map.generation.rule.GenerationConfig
+import game.map.generation.rule.RuleRunner
 import hex.Hex
 import hex.buildRectHexGrid
-import hex.neighbors
 
 class RectRoomGenerator(private val config: GenerationConfig) : RoomGenerator {
     private val transformers = config.rules.map { rule ->
         rule.states.map { it to rule.transformations }
     }.flatten().toMap()
+    private val runner = RuleRunner(transformers)
 
     override fun generate(): Map<Hex, CellType> {
         val width = (config.size.minWidth..config.size.maxWidth).random()
@@ -36,18 +37,6 @@ class RectRoomGenerator(private val config: GenerationConfig) : RoomGenerator {
             getByProbability(config.initialStates)
         }.toMutableMap()
 
-        for (gen in 0..config.generations) {
-            grid.keys.forEach { hex ->
-                val state = grid[hex]!!
-                val neighbors = grid.neighbors(hex).values.toList()
-                val transformations = transformers[state] ?: emptyList()
-                val resultStates =
-                    transformations.mapNotNull { it(state, neighbors) }.toMap().ifEmpty { mapOf(state to 1.0) }
-                val nextState = getByProbability(resultStates)
-                grid[hex] = nextState
-            }
-        }
-
-        return grid
+        return runner.process(grid, config.generations).toMutableMap()
     }
 }

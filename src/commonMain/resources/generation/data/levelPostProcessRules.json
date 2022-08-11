@@ -1,0 +1,77 @@
+{
+  "generations": 2,
+  "rules": [
+    {
+      "states": [
+        "LIGHT_CRYSTAL"
+      ],
+      "transformations": [
+        {
+          "match": "ANY",
+          "result": "FLOOR",
+          "probability": 1,
+          "constraints": [
+            {
+              "cell": "DOOR",
+              "value": 1,
+              "condition": {
+                "#operator": ">="
+              }
+            },
+            {
+              "cell": "LIGHT_CRYSTAL",
+              "value": 1,
+              "condition": {
+                "#operator": ">="
+              }
+            }
+          ]
+        }
+      ],
+      "priority": 100
+    },
+    {
+      "states": [
+        "DOOR"
+      ],
+      "transformations": [
+        {
+          "match": "ANY",
+          "result": "FLOOR",
+          "probability": 1,
+          "constraints": [
+            {
+              "cell": "DOOR",
+              "value": 1,
+              "condition": {
+                "#operator": ">="
+              }
+            },
+            {
+              "cell": "LIGHT_CRYSTAL",
+              "value": 1,
+              "condition": {
+                "#operator": ">="
+              }
+            },
+            {
+              "cell": "WALL",
+              "value": 1,
+              "condition": {
+                "#operator": "=="
+              }
+            },
+            {
+              "cell": "FLOOR",
+              "value": 1,
+              "condition": {
+                "#operator": "=="
+              }
+            }
+          ]
+        }
+      ],
+      "priority": 1
+    }
+  ]
+}

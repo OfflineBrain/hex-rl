@@ -10,7 +10,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Rule(
     val states: Set<CellType>,
-    val transformations: Set<TransformRule>
+    val transformations: Set<TransformRule>,
+    val priority: Int = 0,
 )
 
 @Serializable
@@ -49,7 +50,7 @@ data class TransformRule(
     private val max: Int = constraints.size,
     private val result: CellType,
     private val subRules: Set<TransformRule> = setOf(),
-    private val probability: Double = 0.5
+    private val probability: Double = 0.5,
 ) {
     init {
         require(min >= 0) { "min must be >= 0" }
@@ -71,7 +72,7 @@ data class TransformRule(
         }
 
         if (comply) {
-             return result to probability
+            return result to probability
         }
         return null
     }
