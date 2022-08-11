@@ -62,21 +62,7 @@ class JoiningRoom(
                     continue
                 }
 
-                val merge = intersection.associateWith {
-                    val roomType = room[it]!!
-                    val otherRoomType = shiftedOtherRoom[it]!!
-
-                    if (roomType == otherRoomType) {
-                        roomType
-                    } else {
-                        getByProbability(
-                            mapOf(
-                                roomType to (allowedToMerge[roomType] ?: 0.0),
-                                otherRoomType to (allowedToMerge[otherRoomType] ?: 0.0)
-                            )
-                        )
-                    }
-                }
+                val merge = mergeIntersection(intersection, shiftedOtherRoom, allowedToMerge)
 
                 val merged = mutableMapOf<Hex, CellType>().apply {
                     putAll(room)
@@ -84,29 +70,62 @@ class JoiningRoom(
                     putAll(merge)
                     put(joinHex, getByProbability(joins))
                 }
+
                 val origin = merged.toOrigin()
                 val x = origin.keys.maxBy { it.x }.x.toInt() + 1
                 val y = origin.keys.maxBy { it.y }.y.toInt()
-
                 if (x > maxWidth || y > maxHeight) {
                     continue
                 }
 
-                val newBorders = mutableMapOf<Int, List<List<Hex>>>()
-                borders.keys.filter { it != borderIndex && it != otherBorderIndex }.forEach {
-                    newBorders[it] =
-                        borders[it]!! + other.borders[it]!!.map { border -> border.map { hex -> hex + diff } }
-                }
-                newBorders[borderIndex] =
-                    other.borders[borderIndex]!!.map { border -> border.map { hex -> hex + diff } } +
-                        (borders[borderIndex]!!.filterNot { it.contains(joinHex) })
-                newBorders[otherBorderIndex] = borders[otherBorderIndex]!! +
-                    (other.borders[otherBorderIndex]!!.map { border -> border.map { hex -> hex + diff } }
-                        .filterNot { it.contains(otherJoinHex) })
+                val newBorders = combineBorders(borderIndex, otherBorderIndex, other, diff, joinHex)
 
                 return JoiningRoom(merged, newBorders)
             }
         }
         return this
+    }
+
+    private fun combineBorders(
+        borderIndex: Int,
+        otherBorderIndex: Int,
+        otherRoom: JoiningRoom,
+        diff: Hex,
+        joinHex: Hex
+    ): MutableMap<Int, List<List<Hex>>> {
+        val newBorders = mutableMapOf<Int, List<List<Hex>>>()
+        borders.keys.filter { it != borderIndex && it != otherBorderIndex }.forEach {
+            newBorders[it] =
+                borders[it]!! + otherRoom.borders[it]!!.map { border -> border.map { hex -> hex + diff } }
+        }
+        newBorders[borderIndex] =
+            otherRoom.borders[borderIndex]!!.map { border -> border.map { hex -> hex + diff } } +
+                (borders[borderIndex]!!.filterNot { it.contains(joinHex) })
+        newBorders[otherBorderIndex] = borders[otherBorderIndex]!! +
+            (otherRoom.borders[otherBorderIndex]!!.map { border -> border.map { hex -> hex + diff } }
+                .filterNot { it.contains(joinHex) })
+        return newBorders
+    }
+
+    private fun mergeIntersection(
+        intersection: Set<Hex>,
+        shiftedOtherRoom: Map<Hex, CellType>,
+        allowedToMerge: Map<CellType, Double>
+    ): Map<Hex, CellType> {
+        return intersection.associateWith {
+            val roomType = room[it]!!
+            val otherRoomType = shiftedOtherRoom[it]!!
+
+            if (roomType == otherRoomType) {
+                roomType
+            } else {
+                getByProbability(
+                    mapOf(
+                        roomType to (allowedToMerge[roomType] ?: 0.0),
+                        otherRoomType to (allowedToMerge[otherRoomType] ?: 0.0)
+                    )
+                )
+            }
+        }
     }
 }
