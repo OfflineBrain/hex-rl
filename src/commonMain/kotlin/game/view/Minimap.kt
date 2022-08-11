@@ -13,7 +13,7 @@ class Minimap<T>(private val level: Map<Hex, T>, private val mapping: (T) -> RGB
         val x = level.keys.maxBy { it.x }.x.toInt() + 2
         val y = level.keys.maxBy { it.y }.y.toInt() + 1
 
-        minimapBitmap = Bitmap32(x * 6, y * 5, RGBAPremultiplied(Colors.BLACK))
+        minimapBitmap = Bitmap32(x * 6, y * 5, RGBAPremultiplied(Colors.WHITE))
         write()
     }
 

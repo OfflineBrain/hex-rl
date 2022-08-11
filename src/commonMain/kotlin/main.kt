@@ -1,16 +1,30 @@
-import com.soywiz.korge.*
-import com.soywiz.korge.scene.*
-import com.soywiz.korge.view.*
-import com.soywiz.korim.color.*
-import com.soywiz.korio.file.std.*
-import game.map.generation.*
-import game.map.generation.rule.*
-import game.view.*
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
-import kotlin.math.*
+import com.soywiz.klogger.Logger
+import com.soywiz.korge.Korge
+import com.soywiz.korge.scene.Scene
+import com.soywiz.korge.scene.sceneContainer
+import com.soywiz.korge.view.SContainer
+import com.soywiz.korge.view.image
+import com.soywiz.korge.view.scale
+import com.soywiz.korim.color.Colors
+import com.soywiz.korim.color.RGBA
+import com.soywiz.korio.file.std.resourcesVfs
+import game.map.generation.CellType
+import game.map.generation.LevelGenerator
+import game.map.generation.PostProcessor
+import game.map.generation.RectRoomGenerator
+import game.map.generation.addBorder
+import game.map.generation.rule.GenerationConfig
+import game.map.generation.rule.PostProcessConfig
+import game.map.generation.toOrigin
+import game.view.Minimap
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
+import kotlin.math.max
 
 suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"]) {
+    Logger.defaultLevel = Logger.Level.DEBUG
+    Logger.defaultOutput = Logger.ConsoleLogOutput
+
     val sceneContainer = sceneContainer()
     sceneContainer.changeTo({ MyScene() })
 }
@@ -18,10 +32,15 @@ suspend fun main() = Korge(width = 512, height = 512, bgcolor = Colors["#2b2b2b"
 
 class MyScene : Scene() {
     override suspend fun SContainer.sceneMain() {
-        val generationConfigJson = resourcesVfs["generation/data/bigRoomsConfig.json"].readString()
+        val generationConfigJson = resourcesVfs["generation/data/cavesConfig.json"].readString()
         val generationConfig = Json.decodeFromString<GenerationConfig>(serializer(), generationConfigJson)
 
-        val rectRoomGenerator = RectRoomGenerator(generationConfig)
+        val caveRoomGenerator = RectRoomGenerator(generationConfig)
+
+        val generationConfigJson2 = resourcesVfs["generation/data/bigRoomsConfig.json"].readString()
+        val generationConfig2 = Json.decodeFromString<GenerationConfig>(serializer(), generationConfigJson2)
+
+        val bigRoomGenerator = RectRoomGenerator(generationConfig2)
 
         val postConfigJson = resourcesVfs["generation/data/levelPostProcessRules.json"].readString()
         val postConfig = Json.decodeFromString<PostProcessConfig>(serializer(), postConfigJson)
@@ -37,19 +56,15 @@ class MyScene : Scene() {
                 CellType.LIGHT_CRYSTAL -> Colors.GOLD
             }
         }
-
-
-        var level = JoiningRoom(rectRoomGenerator.generate())
-        for (i in 0..500) {
-            level = level.join(
-                other = JoiningRoom(room = rectRoomGenerator.generate()),
-                joins = mapOf(CellType.DOOR to 1.0),
-                maxHeight = 1000,
-                maxWidth = 1000
+        val level = LevelGenerator(
+            mapOf(
+                caveRoomGenerator to 1.0,
+                bigRoomGenerator to .3
             )
-        }
+        ).generate(200, 200)
 
-        val room = postProcessor.process(level.room.addBorder().toOrigin())
+
+        val room = postProcessor.process(level.addBorder().toOrigin())
         val minimap = Minimap(room, colorMapping)
 
         val view = image(minimap.minimapBitmap)

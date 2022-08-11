@@ -42,7 +42,7 @@
           "constraints": [
             {
               "cell": "WALL",
-              "value": 5,
+              "value": 4,
               "condition": {
                 "#operator": ">="
               }
@@ -56,19 +56,6 @@
             }
           ],
           "result": "WALL"
-        },
-        {
-          "match": "ALL",
-          "constraints": [
-            {
-              "cell": "WALL",
-              "value": 5,
-              "condition": {
-                "#operator": "=="
-              }
-            }
-          ],
-          "result": "LIGHT_CRYSTAL"
         }
       ]
     },
@@ -96,20 +83,6 @@
             }
           ],
           "result": "FLOOR",
-          "probability": 1
-        },
-        {
-          "match": "ALL",
-          "constraints": [
-            {
-              "cell": "FLOOR",
-              "value": 5,
-              "condition": {
-                "#operator": ">="
-              }
-            }
-          ],
-          "result": "LIGHT_CRYSTAL",
           "probability": 1
         }
       ]

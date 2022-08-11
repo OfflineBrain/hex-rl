@@ -1,9 +1,9 @@
 package game.map.generation
 
-import algo.getByProbability
-import hex.Hex
+import algo.*
+import hex.*
 
-class JoiningRoom(
+data class JoiningRoom(
     val room: Map<Hex, CellType>,
     private val borders: MutableMap<Int, List<List<Hex>>> = mutableMapOf()
 ) {
@@ -49,7 +49,8 @@ class JoiningRoom(
         for (borderIndex in borders.keys.shuffled()) {
             val otherBorderIndex = borderIndex * -1
 
-            for (joinBorder in borders[borderIndex]!!.shuffled()) {
+//            for (joinBorder in borders[borderIndex]!!.shuffled()) {
+                val joinBorder = borders[borderIndex]!!.random()
                 val joinHex = joinBorder.random()
                 val otherJoinBorder = other.borders[otherBorderIndex]!!.random()
                 val otherJoinHex = otherJoinBorder.random()
@@ -81,7 +82,7 @@ class JoiningRoom(
                 val newBorders = combineBorders(borderIndex, otherBorderIndex, other, diff, joinHex)
 
                 return JoiningRoom(merged, newBorders)
-            }
+//            }
         }
         return this
     }
