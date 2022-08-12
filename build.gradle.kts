@@ -27,18 +27,6 @@ kotlin {
 
 korge {
     id = "com.offlinebrain.hexrl"
-// To enable all targets at once
-
-    //targetAll()
-
-// To enable targets based on properties/environment variables
-    //targetDefault()
-
-// To selectively enable targets
 
     targetJvm()
-    targetJs()
-    //targetDesktop()
-    //targetIos()
-    //targetAndroidIndirect() // targetAndroidDirect()
 }
