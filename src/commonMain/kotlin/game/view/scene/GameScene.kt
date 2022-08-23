@@ -93,7 +93,7 @@ class GameScene : Scene() {
             .map { SetTileTexture(it) }
             .also { bus.sendManyAsync(it).await().also { if (it is Failure) log.error { it.message } } }
 
-        val textureContainer = textures[1]!!
+        val textureContainer = textures[TextureContainer.TILE_CONTAINER]!!
         log.info { "Rendering level, ${textureContainer.size} sprites" }
         val view = textureContainer.createView(tileTexture.tileSet)
         addChild(view)

@@ -37,8 +37,12 @@ object GameModule : Module() {
 
         mapSingleton {
             mapOf(
-                1 to TextureContainer(1_000_000, 1, PointInt(100, 100), PointInt(42, 50)),
-                2 to TextureContainer(1_000_000, 2, PointInt(100, 100), PointInt(42, 50))
+                TextureContainer.TILE_CONTAINER to TextureContainer(
+                    1_000_000, TextureContainer.TILE_CONTAINER, PointInt(100, 100), PointInt(42, 50)
+                ),
+                TextureContainer.ENTITY_CONTAINER to TextureContainer(
+                    1_000_000, TextureContainer.ENTITY_CONTAINER, PointInt(100, 100), PointInt(42, 50)
+                )
             )
         }
         mapSingleton { TileTextures(42, 50) }

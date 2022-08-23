@@ -1,9 +1,12 @@
 package game.view
 
-import com.soywiz.korge.view.fast.*
-import com.soywiz.korma.geom.*
-import hex.*
-import kotlin.math.*
+import com.soywiz.korge.view.fast.FSprite
+import com.soywiz.korge.view.fast.FSprites
+import com.soywiz.korge.view.fast.fastForEach
+import com.soywiz.korma.geom.Point
+import com.soywiz.korma.geom.PointInt
+import hex.Hex
+import kotlin.math.floor
 
 class TextureContainer private constructor(
     maxSize: Int, val id: Int,
@@ -72,5 +75,8 @@ class TextureContainer private constructor(
         }
 
         operator fun get(id: Int): TextureContainer? = textureContainer[id]
+
+        const val TILE_CONTAINER = 1
+        const val ENTITY_CONTAINER = 2
     }
 }

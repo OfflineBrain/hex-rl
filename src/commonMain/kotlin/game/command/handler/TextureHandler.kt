@@ -31,8 +31,10 @@ class TextureHandler(
         log.info { "Setting tile texture, ${command.entity}" }
         val entity = command.entity
         ecs {
-            val hex = entity.get<Hex>() ?: return@ecs Failure("No hex found for entity $entity").also { log.error { it.message } }
-            val tile = entity.get<Tile>() ?: return@ecs Failure("No cell found for entity $entity").also { log.error { it.message } }
+            val hex = entity.get<Hex>()
+                ?: return@ecs Failure("No hex found for entity $entity").also { log.error { it.message } }
+            val tile = entity.get<Tile>()
+                ?: return@ecs Failure("No cell found for entity $entity").also { log.error { it.message } }
             val sprite = textureContainer.run {
                 alloc {
                     setPosition(hex.x.toFloat(), hex.y.toFloat())
@@ -50,8 +52,8 @@ class TextureHandler(
         suspend operator fun invoke(injector: AsyncInjector): TextureHandler {
             return TextureHandler(
                 injector.get(),
-                injector.get<Map<Int, TextureContainer>>()[1]
-                    ?: throw IllegalStateException("No texture container found for id 1"),
+                injector.get<Map<Int, TextureContainer>>()[TextureContainer.TILE_CONTAINER]
+                    ?: throw IllegalStateException("No texture container found for id ${TextureContainer.TILE_CONTAINER}"),
                 injector.get(),
             )
         }
