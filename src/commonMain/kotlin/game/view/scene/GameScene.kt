@@ -13,8 +13,11 @@ import com.soywiz.korim.color.RGBA
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.PointInt
 import game.command.ConvertMapToEntities
+import game.command.CreatePlayer
+import game.command.SetEntityTexture
 import game.command.SetTileTexture
 import game.command.ShiftView
+import game.command.SpawnPlayer
 import game.map.generation.CellType
 import game.map.generation.LevelGenerator
 import game.map.generation.PostProcessor
@@ -24,6 +27,7 @@ import game.map.generation.rule.GenerationConfig
 import game.map.generation.rule.PostProcessConfig
 import game.map.generation.toOrigin
 import game.view.TextureContainer
+import game.view.texture.EntityTextures
 import game.view.texture.TileTextures
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
@@ -36,11 +40,13 @@ class GameScene : Scene() {
     private lateinit var ecs: ECSManager
     private lateinit var textures: Map<Int, TextureContainer>
     private lateinit var tileTexture: TileTextures
+    private lateinit var entityTexture: EntityTextures
     override suspend fun SContainer.sceneMain() {
         bus = injector.get()
         ecs = injector.get()
         textures = injector.get()
         tileTexture = injector.get()
+        entityTexture = injector.get()
 
         log.info { "Loading resources" }
         val generationConfigJson = resourcesVfs["generation/data/cavesConfig.json"].readString()
@@ -95,8 +101,20 @@ class GameScene : Scene() {
 
         val textureContainer = textures[TextureContainer.TILE_CONTAINER]!!
         log.info { "Rendering level, ${textureContainer.size} sprites" }
-        val view = textureContainer.createView(tileTexture.tileSet)
-        addChild(view)
+        val tileView = textureContainer.createView(tileTexture.tileSet)
+        addChild(tileView)
+
+        val entityTextureContainer = textures[TextureContainer.ENTITY_CONTAINER]!!
+        log.info { "Add entity render." }
+        val entityView = entityTextureContainer.createView(entityTexture.tileSet)
+        addChild(entityView)
+
+        var player: Entity = 0
+        bus.send(CreatePlayer {
+            player = it
+        })
+        bus.sendMany(listOf(SpawnPlayer(player), SetEntityTexture(player)))
+
 
         addUpdater {
             runBlocking { shiftView() }

@@ -5,6 +5,7 @@ import com.soywiz.korge.scene.Module
 import com.soywiz.korinject.AsyncInjector
 import com.soywiz.korma.geom.PointInt
 import game.command.handler.EntityHandler
+import game.command.handler.PlayerHandler
 import game.command.handler.TextureHandler
 import game.command.handler.ViewHandler
 import game.entity.component.SComponent
@@ -48,9 +49,13 @@ object GameModule : Module() {
         mapSingleton { TileTextures(42, 50) }
         mapSingleton { EntityTextures(42, 50) }
 
-        EntityHandler(this).also { get<AsyncCommandBus>().register(it) }
-        TextureHandler(this).also { get<AsyncCommandBus>().register(it) }
-        ViewHandler(this).also { get<AsyncCommandBus>().register(it) }
+        get<AsyncCommandBus>().also { bus ->
+            EntityHandler(this).also { bus.register(it) }
+            TextureHandler(this).also { bus.register(it) }
+            ViewHandler(this).also { bus.register(it) }
+            PlayerHandler(this).also { bus.register(it) }
+        }
+
 
         get<ECSManager>().register(AccessibilityMap.accessibilityTileQuery)
 
