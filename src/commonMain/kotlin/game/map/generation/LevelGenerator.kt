@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.transform
-import utils.AsyncLogger
+import utils.logger
 import utils.measureTimeMillis
 
 class LevelGenerator(private val generators: Map<RoomGenerator, Double>) {
-    private val logger = AsyncLogger<LevelGenerator>()
+    private val logger by logger()
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun generate(width: Int, height: Int): Map<Hex, CellType> {

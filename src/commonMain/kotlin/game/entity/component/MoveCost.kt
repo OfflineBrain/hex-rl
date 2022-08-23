@@ -11,10 +11,9 @@ interface HasMoveCost {
     }
 }
 
-@JvmInline
 @Serializable
 @SerialName("MoveCost")
-value class MoveCost(val value: Double) : Component, Comparable<MoveCost> {
+data class MoveCost(val value: Double) : SComponent(), Comparable<MoveCost> {
     operator fun plus(other: MoveCost): MoveCost = MoveCost(value + other.value)
     operator fun plus(other: Int): MoveCost = MoveCost(value + other)
     operator fun minus(other: MoveCost): MoveCost = MoveCost(value - other.value)

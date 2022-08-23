@@ -2,7 +2,7 @@ package algo
 
 import game.entity.component.*
 import hex.*
-import memoize.*
+import cache.*
 
 fun <V> fov(
     map: Map<Hex, V>,

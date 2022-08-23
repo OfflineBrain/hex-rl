@@ -8,7 +8,8 @@ ecs = { module = "com.offlinebrain:ecs", version = "0.2.2" }
 command-bus = { module = "com.offlinebrain:command-bus", version = "0.2.0" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.4.0" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.4.0-RC" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version = "1.7.10" }
 
 [bundles]
 offlinebrain = ["ecs", "command-bus"]
-kotlinx = ["kotlinx-datetime", "kotlinx-serialization-json"]
+kotlinx = ["kotlinx-datetime", "kotlinx-serialization-json", "kotlin-reflect"]

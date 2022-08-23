@@ -10,7 +10,7 @@ class TextureContainer private constructor(
     private val boardSize: PointInt,
     private val tileSize: PointInt,
 ) : FSprites(maxSize) {
-    private val rowShift = tileSize.y * (3.0 / 4.0)
+    private val rowShift = tileSize.y * (3.0 / 4.0).toFloat()
 
     var shift: PointInt = PointInt(0, 0)
         private set
@@ -26,7 +26,7 @@ class TextureContainer private constructor(
     fun FSprite.setPosition(x: Float, y: Float) {
         setPos(
             x = (x + shift.x) * tileSize.x,
-            y = (y + shift.y) * tileSize.y
+            y = (y + shift.y) * rowShift
         )
     }
 

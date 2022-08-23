@@ -2,7 +2,7 @@ package hex
 
 import com.offlinebrain.ecs.*
 import kotlinx.serialization.*
-import memoize.*
+import cache.*
 import kotlin.math.*
 
 interface HasHex {

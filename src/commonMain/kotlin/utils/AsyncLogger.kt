@@ -1,18 +1,19 @@
 package utils
 
-import com.soywiz.klogger.*
+import com.soywiz.klogger.Logger
 import com.soywiz.klogger.Logger.Level
-import com.soywiz.korio.async.*
-import kotlinx.coroutines.*
+import com.soywiz.korio.async.launchImmediately
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 
-class AsyncLogger(private val logger: Logger) {
+class AsyncLogger private constructor(private val logger: Logger) {
 
     companion object {
         operator fun invoke(name: String) = AsyncLogger(Logger(name))
 
         operator fun invoke(logger: Logger) = AsyncLogger(logger)
 
-        inline operator fun <reified T : Any> invoke() = Logger.invoke(T::class.simpleName ?: "NoClassName")
+        inline operator fun <reified T : Any> invoke() = invoke(T::class.simpleName ?: "NoClassName")
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -38,3 +39,5 @@ class AsyncLogger(private val logger: Logger) {
     /** Traces the lazily executed [msg] if the [Logger.level] is at least [Level.TRACE] */
     fun trace(msg: () -> Any?) = log(Level.TRACE, msg)
 }
+
+public inline fun <reified R : Any> R.logger(): Lazy<AsyncLogger> = lazy { AsyncLogger<R>() }

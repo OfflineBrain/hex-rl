@@ -6,7 +6,7 @@ interface HasTransparency {
     val transparency: Transparency
 }
 
-sealed class Transparency : Component
+sealed class Transparency : SComponent()
 
 object Opaque : Transparency()
 

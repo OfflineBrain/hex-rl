@@ -1,4 +1,4 @@
-package memoize
+package cache
 
 /*
  * Copyright 2013 - 2016 Mario Arias
