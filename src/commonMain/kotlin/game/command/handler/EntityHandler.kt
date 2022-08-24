@@ -8,6 +8,7 @@ import com.soywiz.korinject.AsyncInjector
 import game.command.ConvertMapToEntities
 import game.entity.component.MoveCost
 import game.entity.component.Tile
+import game.entity.component.Transparency
 import game.map.generation.CellType
 import utils.logger
 
@@ -30,26 +31,31 @@ class EntityHandler(
                         CellType.WALL -> {
                             add(Tile("wall"))
                             add(MoveCost(Double.POSITIVE_INFINITY))
+                            add(Transparency(false))
                         }
 
                         CellType.FLOOR -> {
                             add(Tile("floor"))
                             add(MoveCost(1.0))
+                            add(Transparency(true))
                         }
 
                         CellType.DOOR -> {
                             add(Tile("door"))
                             add(MoveCost(2.0))
+                            add(Transparency(true))
                         }
 
                         CellType.LIGHT_CRYSTAL -> {
                             add(Tile("light_crystal"))
                             add(MoveCost(Double.POSITIVE_INFINITY))
+                            add(Transparency(false))
                         }
 
                         CellType.VOID -> {
                             add(Tile("void"))
                             add(MoveCost(Double.POSITIVE_INFINITY))
+                            add(Transparency(false))
                         }
                     }
                 }
