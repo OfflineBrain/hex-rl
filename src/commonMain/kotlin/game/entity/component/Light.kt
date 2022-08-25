@@ -1,11 +1,25 @@
 package game.entity.component
 
+import cache.memoize
 import com.offlinebrain.ecs.BaseQuery
 import com.offlinebrain.ecs.ECSManager
 import com.offlinebrain.ecs.Entity
 import com.soywiz.korim.color.RGB
 
 data class LightSource(val level: UByte, val radius: Int) : SComponent()
+
+private val levels = { source: LightSource ->
+    val step = source.level / source.radius.toUInt()
+    val result = mutableMapOf(0 to source.level)
+    if (source.radius > 0) {
+        for (i in 1..source.radius) {
+            result[i] = (source.level - (step * (i - 1).toUByte())).toUByte()
+        }
+    }
+    result
+}.memoize()
+
+fun LightSource.levels() = levels(this)
 
 data class Light(val level: UByte, val source: Entity) : SComponent()
 

@@ -11,6 +11,7 @@ import game.GameState
 import game.command.CreatePlayer
 import game.command.SpawnPlayer
 import game.entity.component.Displayable
+import game.entity.component.LightSource
 import game.entity.component.NOT_REACHABLE
 import game.entity.component.Player
 import game.entity.component.Tile
@@ -38,6 +39,7 @@ class PlayerHandler(private val ecs: ECSManager) : CommandHandler() {
             create {
                 add(Displayable("player"))
                 add(Player)
+                add(LightSource(255u, 7))
             }
         }
         command.callback(player)
