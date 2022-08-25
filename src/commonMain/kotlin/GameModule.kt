@@ -9,6 +9,8 @@ import game.command.handler.PlayerHandler
 import game.command.handler.TextureHandler
 import game.command.handler.ViewHandler
 import game.entity.component.SComponent
+import game.entity.component.displayableQuery
+import game.entity.component.tileQuery
 import game.map.AccessibilityMap
 import game.view.TextureContainer
 import game.view.scene.GameScene
@@ -57,7 +59,11 @@ object GameModule : Module() {
         }
 
 
-        get<ECSManager>().register(AccessibilityMap.accessibilityTileQuery)
+        get<ECSManager>().run {
+            register(AccessibilityMap.accessibilityTileQuery)
+            register(displayableQuery)
+            register(tileQuery)
+        }
 
         mapPrototype { GameScene() }
     }

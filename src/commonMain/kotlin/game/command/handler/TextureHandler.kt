@@ -5,12 +5,18 @@ import com.offlinebrain.command.CommandResult
 import com.offlinebrain.command.Failure
 import com.offlinebrain.command.Success
 import com.offlinebrain.ecs.ECSManager
+import com.soywiz.korge.view.fast.FSprite
+import com.soywiz.korim.color.RGBA
 import com.soywiz.korinject.AsyncInjector
+import game.command.ApplyLight
 import game.command.SetEntityTexture
 import game.command.SetTileTexture
 import game.entity.component.Displayable
+import game.entity.component.Light
 import game.entity.component.Texture
 import game.entity.component.Tile
+import game.entity.component.displayableQuery
+import game.entity.component.tileQuery
 import game.view.TextureContainer
 import game.view.texture.EntityTextures
 import game.view.texture.TileTextures
@@ -18,6 +24,7 @@ import game.view.texture.cellMappingFunction
 import game.view.texture.textureMappingFunction
 import hex.Hex
 import utils.logger
+import kotlin.math.max
 
 class TextureHandler(
     private val ecs: ECSManager,
@@ -33,6 +40,7 @@ class TextureHandler(
     init {
         on(::setTileTexture)
         on(::setEntityTexture)
+        on(::light)
     }
 
     private fun setTileTexture(command: SetTileTexture): CommandResult {
@@ -72,6 +80,40 @@ class TextureHandler(
             entity.add(Texture(sprite, entityTextureContainer.id))
             Success
         }
+    }
+
+    private fun light(command: ApplyLight): CommandResult {
+        val defaultMul = 127u
+
+        val hexToEntityTexture = ecs {
+            displayableQuery.map.mapValues { (_, entity) ->
+                entity.get<Texture>()
+            }
+        }
+
+        ecs {
+            tileQuery.map.mapValues { (hex, tile) ->
+                val texture = tile.get<Texture>()
+                val light = tile.get<Light>()
+
+                val mul = max(light?.level?.toUInt() ?: 0u, defaultMul).run { RGBA(toInt(), toInt(), toInt()) }
+
+                if (texture != null) {
+                    tileTextureContainer.run {
+                        FSprite(texture.id).colorMul = mul
+                    }
+                }
+
+                hexToEntityTexture[hex]?.let { entityTexture ->
+                    entityTextureContainer.run {
+                        FSprite(entityTexture.id).colorMul = mul
+                    }
+                }
+            }
+        }
+
+
+        return Success
     }
 
     companion object {
