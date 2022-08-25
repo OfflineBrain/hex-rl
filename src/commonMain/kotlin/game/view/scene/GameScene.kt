@@ -12,6 +12,7 @@ import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.PointInt
+import game.command.ApplyLight
 import game.command.ConvertMapToEntities
 import game.command.CreatePlayer
 import game.command.SetEntityTexture
@@ -114,6 +115,8 @@ class GameScene : Scene() {
             player = it
         })
         bus.sendMany(listOf(SpawnPlayer(player), SetEntityTexture(player)))
+
+        bus.send(ApplyLight)
 
 
         addUpdater {
