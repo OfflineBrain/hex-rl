@@ -5,12 +5,14 @@ import com.soywiz.korge.scene.Module
 import com.soywiz.korinject.AsyncInjector
 import com.soywiz.korma.geom.PointInt
 import game.command.handler.AccessibilityHandler
+import game.command.handler.EntityFovHandler
 import game.command.handler.EntityHandler
 import game.command.handler.PlayerHandler
 import game.command.handler.TextureHandler
 import game.command.handler.ViewHandler
 import game.entity.component.SComponent
 import game.entity.component.displayableQuery
+import game.entity.component.playerQuery
 import game.entity.component.tileQuery
 import game.map.AccessibilityMap
 import game.view.TextureContainer
@@ -53,11 +55,12 @@ object GameModule : Module() {
         mapSingleton { EntityTextures(42, 50) }
 
         get<AsyncCommandBus>().also { bus ->
-            EntityHandler(this).also { bus.register(it) }
-            TextureHandler(this).also { bus.register(it) }
-            ViewHandler(this).also { bus.register(it) }
-            PlayerHandler(this).also { bus.register(it) }
-            AccessibilityHandler(this).also { bus.register(it) }
+            bus.register(EntityHandler(this))
+            bus.register(TextureHandler(this))
+            bus.register(ViewHandler(this))
+            bus.register(PlayerHandler(this))
+            bus.register(AccessibilityHandler(this))
+            bus.register(EntityFovHandler(this))
         }
 
 
@@ -65,6 +68,7 @@ object GameModule : Module() {
             register(AccessibilityMap.accessibilityTileQuery)
             register(displayableQuery)
             register(tileQuery)
+            register(playerQuery)
         }
 
         mapPrototype { GameScene() }
