@@ -38,7 +38,7 @@ class PlayerHandler(private val ecs: ECSManager) : CommandHandler() {
 
         val player = ecs {
             create {
-                add(Displayable("player"))
+                add(Displayable.player)
                 add(Player)
                 add(LightSource(255u, 7))
                 add(MovementSpeed(7))

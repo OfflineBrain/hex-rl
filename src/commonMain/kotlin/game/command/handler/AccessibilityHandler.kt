@@ -11,6 +11,7 @@ import game.GameState
 import game.command.BuildAccessibility
 import game.command.BuildPath
 import game.entity.component.AccessibilityPoint
+import game.entity.component.Displayable
 import game.entity.component.MovePath
 import game.entity.component.MovePathNode
 import game.entity.component.MovementSpeed
@@ -51,6 +52,7 @@ class AccessibilityHandler
                 create {
                     add(hex)
                     add(AccessibilityPoint(entity))
+                    add(Displayable.access)
                 }
             }
         }
