@@ -1,8 +1,9 @@
 package algo
 
-import game.entity.component.*
-import hex.*
-import cache.*
+import cache.memoize
+import game.entity.component.HasTransparency
+import game.entity.component.Transparency
+import hex.Hex
 
 fun <V> fov(
     map: Map<Hex, V>,
@@ -29,7 +30,7 @@ fun <V> fov(
     return result
 }
 
-val fovLinesCache: (Int) -> Map<Int, Set<List<Hex>>> = { radius: Int ->
+private val fovLinesCache: (Int) -> Map<Int, Set<List<Hex>>> = { radius: Int ->
     fovLines(radius)
 }.memoize()
 
