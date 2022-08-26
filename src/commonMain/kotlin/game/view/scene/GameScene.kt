@@ -14,6 +14,7 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.PointInt
 import game.command.ApplyLight
 import game.command.BuildAccessibility
+import game.command.CalculateLight
 import game.command.ConvertMapToEntities
 import game.command.CreatePlayer
 import game.command.SetEntityTexture
@@ -116,7 +117,7 @@ class GameScene : Scene() {
             player = it
         })
         bus.sendMany(listOf(SpawnPlayer(player), SetEntityTexture(player)))
-
+        bus.send(CalculateLight(player))
         bus.send(ApplyLight)
 
         val displayAccessCommands = mutableListOf<SetEntityTexture>()

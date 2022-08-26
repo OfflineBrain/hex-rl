@@ -16,7 +16,7 @@ fun <V> fov(
         it.forEach { line ->
             var previous = center
             line.map { hex -> hex + center }.takeWhile { hex ->
-                val canSee = map[previous]?.transparency != Transparency(true)
+                val canSee = map[previous]?.transparency != Transparency(false)
                 previous = hex
                 canSee
             }.associateWith { hex ->

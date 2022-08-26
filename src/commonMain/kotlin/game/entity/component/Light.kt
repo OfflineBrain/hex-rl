@@ -25,14 +25,16 @@ data class Light(val level: UByte, val source: Entity) : SComponent()
 
 fun Light.toMux() = RGB(level.toInt(), level.toInt(), level.toInt())
 
+val lightQuery = LightQuery()
+
 class LightQuery private constructor() : BaseQuery(include = setOf(Light::class)) {
     private val sourceToLight = mutableMapOf<Entity, MutableSet<Entity>>()
-    private lateinit var sourceFn: (Entity) -> Entity
+    private lateinit var sourceFn: (Entity) -> Entity?
 
     override fun offer(entity: Entity, removeIfApplicable: Boolean): Boolean {
         if (requiredMatch(entity)) {
             _entities.add(entity)
-            val source = sourceFn(entity)
+            val source = sourceFn(entity)?: return false
 
             return sourceToLight.getOrPut(source) { mutableSetOf() }.add(entity)
         } else if (removeIfApplicable) {
@@ -56,7 +58,7 @@ class LightQuery private constructor() : BaseQuery(include = setOf(Light::class)
         excludeMappers.addAll(exclude.mapNotNull { this.mapper(it) })
         sourceFn = { entity: Entity ->
             invoke {
-                entity.get<Light>()!!.source
+                entity.get<Light>()?.source
             }
         }
     }

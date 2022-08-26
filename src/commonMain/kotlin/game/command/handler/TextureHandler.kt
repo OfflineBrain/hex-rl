@@ -83,7 +83,7 @@ class TextureHandler(
     }
 
     private fun light(command: ApplyLight): CommandResult {
-        val defaultMul = 127u
+        val defaultMul = 55u
 
         val hexToEntityTexture = ecs {
             displayableQuery.map.mapValues { (_, entity) ->
