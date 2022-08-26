@@ -1,16 +1,19 @@
 package game.command.handler
 
+import algo.accessibility
 import algo.path
 import com.offlinebrain.command.CommandHandler
 import com.offlinebrain.command.CommandResult
 import com.offlinebrain.command.Failure
 import com.offlinebrain.command.Success
 import com.offlinebrain.ecs.ECSManager
-import com.offlinebrain.ecs.Entity
 import game.GameState
+import game.command.BuildAccessibility
 import game.command.BuildPath
+import game.entity.component.AccessibilityPoint
 import game.entity.component.MovePath
 import game.entity.component.MovePathNode
+import game.entity.component.MovementSpeed
 import game.map.AccessibilityMap
 import hex.Hex
 import utils.logger
@@ -23,15 +26,35 @@ class AccessibilityHandler
 
     init {
         on(::buildPath)
+        on(::buildAccessibility)
     }
 
-    private fun buildAccessibility(entity: Entity): CommandResult {
+    private fun buildAccessibility(command: BuildAccessibility): CommandResult {
+        val entity = command.entity
         val level = GameState.level
         val version = GameState.levels[level]?.max() ?: 0
         val accessibilityMap = AccessibilityMap.get(level, version, ecs)
         if (accessibilityMap.data.isEmpty()) {
             return Failure("No accessibility map found for level $level version $version")
         }
+
+        val speed = ecs {
+            entity.get<MovementSpeed>()
+        }?.speed ?: return Failure("Entity $entity doesn't have movement speed and cannot move")
+        val position = ecs {
+            entity.get<Hex>()
+        } ?: return Failure("Entity $entity doesn't have position")
+
+        val accessibility = accessibility(accessibilityMap.data.associateBy { it.hex }, position, speed.toDouble())
+        accessibility.forEach { hex ->
+            ecs {
+                create {
+                    add(hex)
+                    add(AccessibilityPoint(entity))
+                }
+            }
+        }
+
         return Success
     }
 
