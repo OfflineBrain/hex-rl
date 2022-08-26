@@ -7,6 +7,8 @@ import com.offlinebrain.command.CommandResult
 import com.offlinebrain.command.Failure
 import com.offlinebrain.command.Success
 import com.offlinebrain.ecs.ECSManager
+import com.offlinebrain.ecs.Entity
+import com.soywiz.korinject.AsyncInjector
 import game.GameState
 import game.command.BuildAccessibility
 import game.command.BuildPath
@@ -23,7 +25,7 @@ class AccessibilityHandler
     (
     private val ecs: ECSManager,
 ) : CommandHandler() {
-    val log by logger()
+    private val log by logger()
 
     init {
         on(::buildPath)
@@ -47,15 +49,20 @@ class AccessibilityHandler
         } ?: return Failure("Entity $entity doesn't have position")
 
         val accessibility = accessibility(accessibilityMap.data.associateBy { it.hex }, position, speed.toDouble())
+
+        val accessibilityPoints = mutableSetOf<Entity>()
+
         accessibility.forEach { hex ->
             ecs {
-                create {
+                accessibilityPoints.add(create {
                     add(hex)
                     add(AccessibilityPoint(entity))
                     add(Displayable.access)
-                }
+                })
             }
         }
+
+        command.callback(accessibilityPoints)
 
         return Success
     }
@@ -94,5 +101,13 @@ class AccessibilityHandler
 
     private fun destroyPath(): CommandResult {
         return Success
+    }
+
+    companion object {
+        suspend operator fun invoke(injector: AsyncInjector): AccessibilityHandler {
+            return AccessibilityHandler(
+                injector.get(),
+            )
+        }
     }
 }
