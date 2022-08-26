@@ -4,6 +4,7 @@ import com.soywiz.klogger.Logger
 import com.soywiz.korge.scene.Module
 import com.soywiz.korinject.AsyncInjector
 import com.soywiz.korma.geom.PointInt
+import game.command.handler.AccessibilityHandler
 import game.command.handler.EntityHandler
 import game.command.handler.PlayerHandler
 import game.command.handler.TextureHandler
@@ -56,6 +57,7 @@ object GameModule : Module() {
             TextureHandler(this).also { bus.register(it) }
             ViewHandler(this).also { bus.register(it) }
             PlayerHandler(this).also { bus.register(it) }
+            AccessibilityHandler(this).also { bus.register(it) }
         }
 
 

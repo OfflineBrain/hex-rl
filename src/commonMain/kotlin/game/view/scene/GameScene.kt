@@ -13,6 +13,7 @@ import com.soywiz.korim.color.RGBA
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.PointInt
 import game.command.ApplyLight
+import game.command.BuildAccessibility
 import game.command.ConvertMapToEntities
 import game.command.CreatePlayer
 import game.command.SetEntityTexture
@@ -117,6 +118,12 @@ class GameScene : Scene() {
         bus.sendMany(listOf(SpawnPlayer(player), SetEntityTexture(player)))
 
         bus.send(ApplyLight)
+
+        val displayAccessCommands = mutableListOf<SetEntityTexture>()
+        bus.send(BuildAccessibility(player) { accesses ->
+            accesses.map { SetEntityTexture(it) }.toCollection(displayAccessCommands)
+        })
+        bus.sendMany(displayAccessCommands)
 
 
         addUpdater {
